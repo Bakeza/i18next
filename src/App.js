@@ -1,35 +1,30 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { useTranslation, Trans } from "react-i18next";
+import TestingRouter from "./router";
+import { I18nextProvider } from "react-i18next";
 
-const lngs = {
-  en: { nativeName: "English" },
-  ar: { nativeName: "Arabic" }
-};
+import i18n from "./i18n";
+import { useEffect, useState } from "react";
+import { ConfigProvider } from "antd";
+import { LanguageContext } from "./context/languageContext";
 
 function App() {
-  const { t, i18n } = useTranslation();
+  
+  const [language, setLanguage] = useState(
+    localStorage.getItem("language") || "en"
+  );
+
+  useEffect(() => {
+    document.body.dir = language === "ar" ? "rtl" : "ltr";
+    localStorage.setItem("language", language);
+  }, [language]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1> {t("title")}</h1>
-        <div>
-          {Object.keys(lngs).map((lng) => (
-            <button
-              type="submit"
-              key={lng}
-              onClick={() => i18n.changeLanguage(lng)}
-              disabled={i18n.resolvedLanguage === lng}
-            >
-              {lngs[lng].nativeName}
-            </button>
-          ))}
-        </div>
-        <p>
-          <Trans i18nKey="description" />
-        </p>
-      </header>
-    </div>
+    <ConfigProvider direction={language}>
+      <LanguageContext.Provider value={{ language, setLanguage }}>
+        <I18nextProvider i18n={i18n}>
+          <TestingRouter />
+        </I18nextProvider>
+      </LanguageContext.Provider>
+    </ConfigProvider>
   );
 }
 

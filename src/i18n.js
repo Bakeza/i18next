@@ -1,10 +1,24 @@
-import i18next from "i18next";
+import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import Backend from "i18next-http-backend";
+import HttpApi from 'i18next-http-backend';
+import languageDetector from 'i18next-browser-languagedetector';
+import en from './locales/en';
+import ar from './locales/ar';
 
-i18next.use(initReactI18next).use(LanguageDetector).use(Backend).init({
-  debug: true,
-  fallbackLang: "en",
-  saveMissing: true
-});
+i18n
+  .use(HttpApi)
+  .use(initReactI18next)
+  .use(languageDetector)
+  .init({
+    fallbackLng: "en",
+    fallbackNS: 'navbar',
+    ns: ['about', 'home', 'navbar'],
+    defaultNS: 'common',
+    resources: {
+      en,
+      ar
+    },
+    
+  });
+
+export default i18n;
